@@ -6,6 +6,8 @@
 #include <QTextEdit>
 #include <QPushButton>
 
+#include "renderer.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ private:
     QVBoxLayout * _outputLayout;
     QVBoxLayout * _editorLayout;
 
+    Renderer * _outputRenderer;
     QTextEdit * _outputTextEdit;
 
     QTabWidget * _editorTabWidget;
@@ -36,5 +39,6 @@ private:
 
     void _initView();
     void _initMenu();
+    void _updateOutputRenderer(int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE]);
 };
 #endif // MAINWINDOW_H

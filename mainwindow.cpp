@@ -9,6 +9,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     _initView();
     _initMenu();
+
+    // TEST
+    int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE];
+    for (int i = 0; i < OUTPUT_RENDERER_GRID_SIZE; i++)
+        for (int j = 0; j < OUTPUT_RENDERER_GRID_SIZE; j++)
+            grid[i][j] = 0;
+    grid[0][0] = 1;
+    _updateOutputRenderer(grid);
 }
 
 MainWindow::~MainWindow() {}
@@ -21,7 +29,10 @@ void MainWindow::_initView()
     _outputLayout = new QVBoxLayout;
     _editorLayout = new QVBoxLayout;
 
+    _outputRenderer = new Renderer;
     _outputTextEdit = new QTextEdit;
+
+    _outputLayout->addWidget(_outputRenderer);
     _outputLayout->addWidget(_outputTextEdit);
 
     _editorTabWidget = new QTabWidget;
@@ -67,4 +78,9 @@ void MainWindow::_initMenu()
 void MainWindow::openFile()
 {
 
+}
+
+void MainWindow::_updateOutputRenderer(int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE])
+{
+    //_outputRenderer->updateGrid(grid);
 }
