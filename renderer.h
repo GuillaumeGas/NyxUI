@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "grid.h"
+
 #define OUTPUT_RENDERER_GRID_SIZE 10
 
 class Renderer : public QWidget
@@ -14,12 +16,16 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
-    void updateGrid(const int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE]);
+    void updateGrid(QString filePath);
 
 signals:
 
 private:
     virtual void paintEvent(QPaintEvent*) override;
+    void drawMapAndPlayers(QPainter & painter);
+    void drawGrid(QPainter & painter);
+
+    Grid _grid;
 };
 
 #endif // RENDERER_H

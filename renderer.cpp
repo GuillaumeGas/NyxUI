@@ -15,6 +15,45 @@ void Renderer::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
+    drawMapAndPlayers(painter);
+    drawGrid(painter);
+}
+
+void Renderer::drawMapAndPlayers(QPainter & painter)
+{
+    QPixmap wallImage(":/images/wall.png");
+    QPixmap emptyImage(":/images/empty.png");
+    QPixmap aiImage(":images/ai.png");
+
+    const QVector<QVector<int>> & grid = _grid.getGrid();
+
+    for (int i = 0; i < grid.count(); i++)
+    {
+        for (int j = 0; j < grid.count(); j++)
+        {
+            int x = (j * CELL_SIZE) + (width() - (GRID_SIZE + CELL_SIZE)) / 2;
+            int y = (i * CELL_SIZE) + (height() - (GRID_SIZE + CELL_SIZE)) / 2;
+
+            switch(grid[i][j])
+            {
+            case 0:
+                painter.drawPixmap(x, y, emptyImage);
+                break;
+            case 1:
+                painter.drawPixmap(x, y, wallImage);
+                break;
+            case 2:
+                painter.drawPixmap(x, y, aiImage);
+                break;
+            default:
+                painter.drawPixmap(x, y, emptyImage);
+            }
+        }
+    }
+}
+
+void Renderer::drawGrid(QPainter & painter)
+{
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
 
     QList<QLine> verticalLines;
@@ -52,4 +91,9 @@ QSize Renderer::minimumSizeHint() const
 QSize Renderer::sizeHint() const
 {
     return QSize(400, 400);
+}
+
+void Renderer::updateGrid(QString filePath)
+{
+    _grid.load(filePath);
 }

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="ai.png">images/ai.png</file>
+        <file alias="empty.png">images/empty.png</file>
+        <file alias="wall.png">images/wall.png</file>
+    </qresource>
+</RCC>

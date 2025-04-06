@@ -82,5 +82,5 @@ void MainWindow::openFile()
 
 void MainWindow::_updateOutputRenderer(int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE])
 {
-    //_outputRenderer->updateGrid(grid);
+    _outputRenderer->updateGrid("C:\\Users\\Guillaume\\Documents\\prog\\c++\\NyxUI\\map");
 }

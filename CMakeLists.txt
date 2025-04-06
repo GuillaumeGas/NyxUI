@@ -23,6 +23,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         renderer.h renderer.cpp
+        images/ai.png images/empty.png images/wall.png
+        resources.qrc
+        grid.h grid.cpp
+        grid.h
+        grid.cpp
+        map
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET NyxUI APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
