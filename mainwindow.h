@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void openFile();
+    void openMapFile();
 
 private:
     QWidget * _window;
@@ -39,6 +39,5 @@ private:
 
     void _initView();
     void _initMenu();
-    void _updateOutputRenderer(int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE]);
 };
 #endif // MAINWINDOW_H

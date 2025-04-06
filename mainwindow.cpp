@@ -3,20 +3,13 @@
 #include <QScreen>
 #include <QApplication>
 #include <QMenuBar>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     _initView();
     _initMenu();
-
-    // TEST
-    int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE];
-    for (int i = 0; i < OUTPUT_RENDERER_GRID_SIZE; i++)
-        for (int j = 0; j < OUTPUT_RENDERER_GRID_SIZE; j++)
-            grid[i][j] = 0;
-    grid[0][0] = 1;
-    _updateOutputRenderer(grid);
 }
 
 MainWindow::~MainWindow() {}
@@ -65,22 +58,21 @@ void MainWindow::_initMenu()
 {
     QMenu * fileMenu = menuBar()->addMenu("File");
 
-    _actionFile = new QAction("Open file...", this);
+    _actionFile = new QAction("Open map file...", this);
     _actionQuit = new QAction("Quit", this);
 
     fileMenu->addAction(_actionFile);
     fileMenu->addAction(_actionQuit);
 
-    connect(_actionFile, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(_actionFile, SIGNAL(triggered()), this, SLOT(openMapFile()));
     connect(_actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 }
 
-void MainWindow::openFile()
+void MainWindow::openMapFile()
 {
-
-}
-
-void MainWindow::_updateOutputRenderer(int grid[OUTPUT_RENDERER_GRID_SIZE][OUTPUT_RENDERER_GRID_SIZE])
-{
-    _outputRenderer->updateGrid("C:\\Users\\Guillaume\\Documents\\prog\\c++\\NyxUI\\map");
+    QString mapFile = QFileDialog::getOpenFileName(this, "Open map file");
+    if (mapFile.length() > 0)
+    {
+        _outputRenderer->updateGrid(mapFile);
+    }
 }
