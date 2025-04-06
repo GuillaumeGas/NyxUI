@@ -18,6 +18,7 @@ public:
 
 private slots:
     void openMapFile();
+    void openScriptFile();
 
 private:
     QWidget * _window;
@@ -34,7 +35,8 @@ private:
     QTextEdit * _editorTextEdit;
     QPushButton * _executeButton;
 
-    QAction * _actionFile;
+    QAction * _actionMapFile;
+    QAction * _actionScriptFile;
     QAction * _actionQuit;
 
     void _initView();

@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +25,7 @@ void MainWindow::_initView()
 
     _outputRenderer = new Renderer;
     _outputTextEdit = new QTextEdit;
+    _outputTextEdit->setFontFamily("Courier New");
 
     _outputLayout->addWidget(_outputRenderer);
     _outputLayout->addWidget(_outputTextEdit);
@@ -31,6 +33,7 @@ void MainWindow::_initView()
     _editorTabWidget = new QTabWidget;
     _editorVBoxLayout = new QVBoxLayout;
     _editorTextEdit = new QTextEdit;
+    _editorTextEdit->setFontFamily("Courier New");
     _executeButton = new QPushButton("Execute (F12)");
 
     _editorVBoxLayout->addWidget(_editorTextEdit);
@@ -58,13 +61,16 @@ void MainWindow::_initMenu()
 {
     QMenu * fileMenu = menuBar()->addMenu("File");
 
-    _actionFile = new QAction("Open map file...", this);
+    _actionMapFile = new QAction("Open map file...", this);
+    _actionScriptFile = new QAction("Open script...", this);
     _actionQuit = new QAction("Quit", this);
 
-    fileMenu->addAction(_actionFile);
+    fileMenu->addAction(_actionMapFile);
+    fileMenu->addAction(_actionScriptFile);
     fileMenu->addAction(_actionQuit);
 
-    connect(_actionFile, SIGNAL(triggered()), this, SLOT(openMapFile()));
+    connect(_actionMapFile, SIGNAL(triggered()), this, SLOT(openMapFile()));
+    connect(_actionScriptFile, SIGNAL(triggered()), this, SLOT(openScriptFile()));
     connect(_actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 }
 
@@ -74,5 +80,30 @@ void MainWindow::openMapFile()
     if (mapFile.length() > 0)
     {
         _outputRenderer->updateGrid(mapFile);
+    }
+}
+
+void MainWindow::openScriptFile()
+{
+    QString scriptFile = QFileDialog::getOpenFileName(this, "Open script file", "", "*.nx");
+    if (scriptFile.length() > 0)
+    {
+        QFile file(scriptFile);
+        if (!file.exists())
+        {
+            QMessageBox::warning(this, "File", "File not found");
+            return;
+        }
+
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QMessageBox::warning(this, "File", "Cannot open file");
+            return;
+        }
+
+        QString content = file.readAll();
+        _editorTextEdit->setPlainText(content);
+
+        file.close();
     }
 }
