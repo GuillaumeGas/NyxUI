@@ -68,6 +68,8 @@ void Grid::load(QString filePath)
     {
         QMessageBox::information(nullptr, "File", "File loaded successfully !");
     }
+
+    file.close();
 }
 
 const QVector<QVector<int>> & Grid::getGrid() const

@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+include_directories("C:/Users/Guillaume/Documents/prog/c++/NyxQt")
+
+link_directories("C:/Users/Guillaume/Documents/prog/c++/NyxQt/build/Desktop_Qt_6_8_3_MinGW_64_bit-Debug")
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
@@ -48,7 +52,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(NyxUI PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(NyxUI PRIVATE libNyxQt Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -70,6 +74,11 @@ install(TARGETS NyxUI
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_custom_command(TARGET NyxUI POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  "C:/Users/Guillaume/Documents/prog/c++/NyxQt/build/Desktop_Qt_6_8_3_MinGW_64_bit-Debug/libNyxQt.dll"
+  $<TARGET_FILE_DIR:NyxUI>)
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(NyxUI)

@@ -6,6 +6,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include <compilo/Compilo.hpp>
+
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -34,7 +38,9 @@ void MainWindow::_initView()
     _editorVBoxLayout = new QVBoxLayout;
     _editorTextEdit = new QTextEdit;
     _editorTextEdit->setFontFamily("Courier New");
-    _executeButton = new QPushButton("Execute (F12)");
+    _executeButton = new QPushButton("Execute (F12)", this);
+
+    connect(_executeButton, SIGNAL(clicked()), this, SLOT(executeScriptFile()));
 
     _editorVBoxLayout->addWidget(_editorTextEdit);
     _editorVBoxLayout->addWidget(_executeButton);
@@ -103,7 +109,17 @@ void MainWindow::openScriptFile()
 
         QString content = file.readAll();
         _editorTextEdit->setPlainText(content);
-
+        _currentScriptFilePath = file.fileName();
         file.close();
     }
+}
+
+void MainWindow::executeScriptFile()
+{
+    std::string fName = _currentScriptFilePath.toStdString();
+    std::stringstream ss;
+    nyx::Compilo c(fName, ss, true);
+    c.compile();
+    QString res(ss.str().c_str());
+    _outputTextEdit->setPlainText(res);
 }
