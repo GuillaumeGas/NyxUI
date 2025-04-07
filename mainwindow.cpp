@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
 
 #include <compilo/Compilo.hpp>
 
@@ -36,11 +37,15 @@ void MainWindow::_initView()
 
     _editorTabWidget = new QTabWidget;
     _editorVBoxLayout = new QVBoxLayout;
+
     _editorTextEdit = new QTextEdit;
     _editorTextEdit->setFontFamily("Courier New");
     _executeButton = new QPushButton("Execute (F12)", this);
 
+    QShortcut * executeShortcut = new QShortcut(QKeySequence("F12"), this);
+
     connect(_executeButton, SIGNAL(clicked()), this, SLOT(executeScriptFile()));
+    connect(executeShortcut, SIGNAL(activated()), this, SLOT(executeScriptFile()));
 
     _editorVBoxLayout->addWidget(_editorTextEdit);
     _editorVBoxLayout->addWidget(_executeButton);
