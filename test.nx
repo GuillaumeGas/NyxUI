@@ -1,0 +1,17 @@
+struct Position
+{
+        int x;
+	int y;
+}
+
+int main()
+{
+        let p = new Position;
+	p.x = 1;
+	let a = 1;
+	let b = a + p.x;
+
+        $print(b);
+
+        return 0;
+}
