@@ -5,6 +5,8 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QLabel>
+#include <QShortcut>
 
 #include "renderer.h"
 
@@ -20,6 +22,8 @@ private slots:
     void openMapFile();
     void openScriptFile();
     void executeScriptFile();
+    void editorTextEditChanged();
+    void saveFile();
 
 private:
     QWidget * _window;
@@ -33,8 +37,12 @@ private:
 
     QTabWidget * _editorTabWidget;
     QVBoxLayout * _editorVBoxLayout;
+    QLabel * _scriptFileLabel;
     QTextEdit * _editorTextEdit;
     QPushButton * _executeButton;
+
+    QShortcut * _executeShortcut;
+    QShortcut * _saveFileShortcut;
 
     QAction * _actionMapFile;
     QAction * _actionScriptFile;
@@ -44,5 +52,7 @@ private:
 
     void _initView();
     void _initMenu();
+
+    void setScriptFileLabelAsModified(bool isModified);
 };
 #endif // MAINWINDOW_H

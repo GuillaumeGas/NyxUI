@@ -5,11 +5,8 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QShortcut>
 
 #include <compilo/Compilo.hpp>
-
-#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,15 +35,21 @@ void MainWindow::_initView()
     _editorTabWidget = new QTabWidget;
     _editorVBoxLayout = new QVBoxLayout;
 
+    _scriptFileLabel = new QLabel(this);
+
     _editorTextEdit = new QTextEdit;
     _editorTextEdit->setFontFamily("Courier New");
     _executeButton = new QPushButton("Execute (F12)", this);
 
-    QShortcut * executeShortcut = new QShortcut(QKeySequence("F12"), this);
+    _executeShortcut = new QShortcut(QKeySequence("F12"), this);
+    _saveFileShortcut = new QShortcut(QKeySequence("Ctrl+S"), this);
 
     connect(_executeButton, SIGNAL(clicked()), this, SLOT(executeScriptFile()));
-    connect(executeShortcut, SIGNAL(activated()), this, SLOT(executeScriptFile()));
+    connect(_executeShortcut, SIGNAL(activated()), this, SLOT(executeScriptFile()));
+    connect(_editorTextEdit, SIGNAL(textChanged()), this, SLOT(editorTextEditChanged()));
+    connect(_saveFileShortcut, SIGNAL(activated()), this, SLOT(saveFile()));
 
+    _editorVBoxLayout->addWidget(_scriptFileLabel);
     _editorVBoxLayout->addWidget(_editorTextEdit);
     _editorVBoxLayout->addWidget(_executeButton);
 
@@ -109,14 +112,42 @@ void MainWindow::openScriptFile()
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
             QMessageBox::warning(this, "File", "Cannot open file");
+            file.close();
             return;
         }
 
         QString content = file.readAll();
         _editorTextEdit->setPlainText(content);
         _currentScriptFilePath = file.fileName();
+        _scriptFileLabel->setText(_currentScriptFilePath);
+        _scriptFileLabel->setStyleSheet("font-style: normal");
+
         file.close();
     }
+}
+
+void MainWindow::saveFile()
+{
+    if (_currentScriptFilePath.isEmpty())
+        return;
+
+    QFile file(_currentScriptFilePath);
+    if (!file.exists())
+        return;
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "File", "Couldn't open destination file");
+        file.close();
+        return;
+    }
+
+    file.resize(0); // delete file content
+    file.write(_editorTextEdit->toPlainText().toStdString().c_str());
+
+    setScriptFileLabelAsModified(false);
+
+    file.close();
 }
 
 void MainWindow::executeScriptFile()
@@ -127,4 +158,23 @@ void MainWindow::executeScriptFile()
     c.compile();
     QString res(ss.str().c_str());
     _outputTextEdit->setPlainText(res);
+}
+
+void MainWindow::editorTextEditChanged()
+{
+    setScriptFileLabelAsModified(true);
+}
+
+void MainWindow::setScriptFileLabelAsModified(bool isModified)
+{
+    if (isModified)
+    {
+        _scriptFileLabel->setStyleSheet("font-style: italic");
+        _scriptFileLabel->setText(_currentScriptFilePath + "*");
+    }
+    else
+    {
+        _scriptFileLabel->setStyleSheet("font-style: normal");
+        _scriptFileLabel->setText(_currentScriptFilePath);
+    }
 }
