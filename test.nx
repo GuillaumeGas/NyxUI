@@ -10,8 +10,11 @@ int main()
 	p.x = 1;
 	let a = 1;
 	let b = a + p.x;
+	let p2 = new Position;
+	p2.x = 10;
 
-        $print(b);
+        $println(b);
+        $print(b+p2.x);
 
         return 0;
 }

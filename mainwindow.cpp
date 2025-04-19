@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "codeeditor.h"
 
 #include <QScreen>
 #include <QApplication>
@@ -37,7 +38,7 @@ void MainWindow::_initView()
 
     _scriptFileLabel = new QLabel(this);
 
-    _editorTextEdit = new QTextEdit;
+    _editorTextEdit = new CodeEditor(this);
     _editorTextEdit->setFontFamily("Courier New");
     _executeButton = new QPushButton("Execute (F12)", this);
 

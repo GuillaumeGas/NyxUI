@@ -9,6 +9,7 @@
 #include <QShortcut>
 
 #include "renderer.h"
+#include "codeeditor.h"
 
 class MainWindow : public QMainWindow
 {
@@ -38,7 +39,7 @@ private:
     QTabWidget * _editorTabWidget;
     QVBoxLayout * _editorVBoxLayout;
     QLabel * _scriptFileLabel;
-    QTextEdit * _editorTextEdit;
+    CodeEditor * _editorTextEdit;
     QPushButton * _executeButton;
 
     QShortcut * _executeShortcut;
