@@ -44,11 +44,15 @@ void MainWindow::_initView()
 
     _executeShortcut = new QShortcut(QKeySequence("F12"), this);
     _saveFileShortcut = new QShortcut(QKeySequence("Ctrl+S"), this);
+    _openScriptFileShortcut = new QShortcut(QKeySequence("Ctrl+O"), this);
+    _openMapFileShortcut = new QShortcut(QKeySequence("Ctrl+M"), this);
 
     connect(_executeButton, SIGNAL(clicked()), this, SLOT(executeScriptFile()));
     connect(_executeShortcut, SIGNAL(activated()), this, SLOT(executeScriptFile()));
     connect(_editorTextEdit, SIGNAL(textChanged()), this, SLOT(editorTextEditChanged()));
     connect(_saveFileShortcut, SIGNAL(activated()), this, SLOT(saveFile()));
+    connect(_openScriptFileShortcut, SIGNAL(activated()), this, SLOT(openScriptFile()));
+    connect(_openMapFileShortcut, SIGNAL(activated()), this, SLOT(openMapFile()));
 
     _editorVBoxLayout->addWidget(_scriptFileLabel);
     _editorVBoxLayout->addWidget(_editorTextEdit);
