@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QPlainTextEdit>
 
+#include "highlighter.h"
+
 class CodeEditor : public QPlainTextEdit
 {
     Q_OBJECT
@@ -27,6 +29,8 @@ private slots:
 
 private:
     QWidget * lineNumberWidget;
+
+    Highlighter * highlighter;
 };
 
 #endif // CODEEDITOR_H
