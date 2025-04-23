@@ -6,6 +6,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QToolBar>
 
 #include <compilo/Compilo.hpp>
 
@@ -74,6 +75,8 @@ void MainWindow::_initView()
 
     QRect rect = QGuiApplication::primaryScreen()->geometry();
     resize(rect.size() * 0.7);
+
+    _nyxDebugMode = false;
 }
 
 void MainWindow::_initMenu()
@@ -91,6 +94,17 @@ void MainWindow::_initMenu()
     connect(_actionMapFile, SIGNAL(triggered()), this, SLOT(openMapFile()));
     connect(_actionScriptFile, SIGNAL(triggered()), this, SLOT(openScriptFile()));
     connect(_actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+    QMenu * nyxMenu = menuBar()->addMenu("Nyx");
+    QToolBar * nyxToolBar = addToolBar("Nyx");
+
+    _actionNyxDebugMode = new QAction("Ast", this);
+    _actionNyxDebugMode->setCheckable(true);
+
+    nyxMenu->addAction(_actionNyxDebugMode);
+    nyxToolBar->addAction(_actionNyxDebugMode);
+
+    connect(_actionNyxDebugMode, SIGNAL(toggled(bool)), this, SLOT(nyxDebugMode(bool)));
 }
 
 void MainWindow::openMapFile()
@@ -159,7 +173,7 @@ void MainWindow::executeScriptFile()
 {
     std::string fName = _currentScriptFilePath.toStdString();
     std::stringstream ss;
-    nyx::Compilo c(fName, ss, true);
+    nyx::Compilo c(fName, ss, _nyxDebugMode);
     c.compile();
     QString res(ss.str().c_str());
     _outputTextEdit->setPlainText(res);
@@ -182,4 +196,9 @@ void MainWindow::setScriptFileLabelAsModified(bool isModified)
         _scriptFileLabel->setStyleSheet("font-style: normal");
         _scriptFileLabel->setText(_currentScriptFilePath);
     }
+}
+
+void MainWindow::nyxDebugMode(bool checked)
+{
+    _nyxDebugMode = checked;
 }

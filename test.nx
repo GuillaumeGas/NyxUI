@@ -4,17 +4,37 @@ struct Position
     int y;
 }
 
+void helloWorld()
+{
+    $println("Hello World !");
+}
+
 int main()
 {
     let p = new Position;
     p.x = 1;
+    p.y = 1;
+
     let a = 1;
     let b = a + p.x;
+
     let p2 = new Position;
     p2.x = 10;
+    p2.y = 10;
 
+    helloWorld();
+
+    $print("b = ");
     $println(b);
-    $print(b+p2.x);
+
+    $print("b+p2.x = ");
+    $println(b+p2.x);
+
+    for (i in [0 .. 10])
+    {
+        $print(i);
+    }
+
 
     return 0;
 }

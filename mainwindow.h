@@ -25,6 +25,7 @@ private slots:
     void executeScriptFile();
     void editorTextEditChanged();
     void saveFile();
+    void nyxDebugMode(bool checked);
 
 private:
     QWidget * _window;
@@ -51,7 +52,11 @@ private:
     QAction * _actionScriptFile;
     QAction * _actionQuit;
 
+    QAction * _actionNyxDebugMode;
+
     QString _currentScriptFilePath;
+
+    bool _nyxDebugMode;
 
     void _initView();
     void _initMenu();
