@@ -33,6 +33,10 @@ int main()
     for (i in [0 .. 10])
     {
         $print(i);
+        if (i < 10)
+        {
+            $print(", ");
+        }
     }
 
 
