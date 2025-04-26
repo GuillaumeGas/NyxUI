@@ -1,12 +1,28 @@
 struct Position
 {
-    int x;
+    int x;      // User coordinates
     int y;
+    int[] grid; // Grid content (0 if empty, 1 for walls, 2 for player)
 }
 
-void helloWorld()
+void printPosition(Position p)
 {
-    $println("Hello World !");
+    $println("Sum coordinates (very usefull) : ", p.x + p.y);
+    printArray(p.grid);
+}
+
+/*
+  Prints an array of integers !
+*/
+void printArray(int[] array)
+{
+    let i = 0;
+    for (elem in array)
+    {
+        $print(elem);
+        if (i < 4) { $println(); }
+    }
+    $println();
 }
 
 int main()
@@ -14,31 +30,9 @@ int main()
     let p = new Position;
     p.x = 1;
     p.y = 1;
+    p.grid = [1, 2, 3, 4];
 
-    let a = 1;
-    let b = a + p.x;
-
-    let p2 = new Position;
-    p2.x = 10;
-    p2.y = 10;
-
-    helloWorld();
-
-    $print("b = ");
-    $println(b);
-
-    $print("b+p2.x = ");
-    $println(b+p2.x);
-
-    for (i in [0 .. 10])
-    {
-        $print(i);
-        if (i < 10)
-        {
-            $print(", ");
-        }
-    }
-
+    printPosition(p);
 
     return 0;
 }
