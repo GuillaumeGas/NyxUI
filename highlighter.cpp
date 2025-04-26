@@ -16,7 +16,9 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
         QStringLiteral("\\bwhile\\b"),
         QStringLiteral("\\bnew\\b"),
         QStringLiteral("\\bif\\b"),
-        QStringLiteral("\\belse\\b")
+        QStringLiteral("\\belse\\b"),
+        QStringLiteral("\\bvoid\\b"),
+        QStringLiteral("\\bin\\b"),
     };
 
     for (const QString &pattern : keywordPatterns)
