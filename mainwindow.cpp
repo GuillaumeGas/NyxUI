@@ -141,6 +141,9 @@ void MainWindow::openScriptFile()
         _scriptFileLabel->setText(_currentScriptFilePath);
         _scriptFileLabel->setStyleSheet("font-style: normal");
 
+        QFileInfo fileInfo(file.fileName());
+        _editorTabWidget->setTabText(0, fileInfo.fileName());
+
         file.close();
     }
 }
