@@ -28,6 +28,8 @@ private slots:
     void highlightCurrentLine();
 
 private:
+    void setTabSize();
+
     QWidget * lineNumberWidget;
 
     Highlighter * highlighter;

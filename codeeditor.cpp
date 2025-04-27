@@ -16,6 +16,7 @@ CodeEditor::CodeEditor(QWidget * parent) : QPlainTextEdit(parent)
 
     updateLineNumberWidgetWidth(0);
     highlightCurrentLine();
+    setTabSize();
 }
 
 void CodeEditor::setFontFamily(QString fontFamily)
@@ -23,7 +24,18 @@ void CodeEditor::setFontFamily(QString fontFamily)
     QTextDocument * doc = document();
     QFont font = doc->defaultFont();
     font.setFamily(fontFamily);
+
+    setTabStopDistance(QFontMetricsF(font).horizontalAdvance(' ') * 4);
+
     doc->setDefaultFont(font);
+}
+
+void CodeEditor::setTabSize()
+{
+    QTextDocument * doc = document();
+    QFont font = doc->defaultFont();
+
+    setTabStopDistance(QFontMetricsF(font).horizontalAdvance(' ') * 4);
 }
 
 int CodeEditor::lineNumberWidgetWidth()
