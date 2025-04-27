@@ -19,6 +19,7 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
         QStringLiteral("\\belse\\b"),
         QStringLiteral("\\bvoid\\b"),
         QStringLiteral("\\bin\\b"),
+        QStringLiteral("\\bimport\\b"),
     };
 
     for (const QString &pattern : keywordPatterns)
