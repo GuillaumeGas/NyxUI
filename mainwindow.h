@@ -38,10 +38,9 @@ private:
     QTextEdit * _outputTextEdit;
 
     QTabWidget * _editorTabWidget;
-    QVBoxLayout * _editorVBoxLayout;
-    QLabel * _scriptFileLabel;
-    CodeEditor * _editorTextEdit;
-    QPushButton * _executeButton;
+    QVector<QLabel*> _scriptFileLabelVector;
+    QVector<CodeEditor*> _codeEditorVector;
+    QVector<QString> _filesPathVector;
 
     QShortcut * _executeShortcut;
     QShortcut * _saveFileShortcut;
@@ -52,15 +51,20 @@ private:
     QAction * _actionScriptFile;
     QAction * _actionQuit;
 
+    QAction * _actionNyxRun;
     QAction * _actionNyxDebugMode;
 
-    QString _currentScriptFilePath;
+    //QString _currentScriptFilePath;
 
     bool _nyxDebugMode;
+    int _nbOpennedFiles;
 
     void _initView();
     void _initMenu();
+    void _initDefaultData();
 
-    void setScriptFileLabelAsModified(bool isModified);
+    void _setScriptFileLabelAsModified(bool isModified, QLabel * fileLabel, QString & scriptFilePath);
+    CodeEditor * _newCodeEditor();
+    QWidget * _newCodeEditorWidget();
 };
 #endif // MAINWINDOW_H

@@ -15,9 +15,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     _initView();
     _initMenu();
+    _initDefaultData();
 }
 
 MainWindow::~MainWindow() {}
+
+void MainWindow::_initDefaultData()
+{
+    _nyxDebugMode = false;
+    _nbOpennedFiles = 0;
+}
 
 void MainWindow::_initView()
 {
@@ -35,33 +42,18 @@ void MainWindow::_initView()
     _outputLayout->addWidget(_outputTextEdit);
 
     _editorTabWidget = new QTabWidget;
-    _editorVBoxLayout = new QVBoxLayout;
-
-    _scriptFileLabel = new QLabel(this);
-
-    _editorTextEdit = new CodeEditor(this);
-    _editorTextEdit->setFontFamily("Courier New");
-    _executeButton = new QPushButton("Execute (F12)", this);
 
     _executeShortcut = new QShortcut(QKeySequence("F12"), this);
     _saveFileShortcut = new QShortcut(QKeySequence("Ctrl+S"), this);
     _openScriptFileShortcut = new QShortcut(QKeySequence("Ctrl+O"), this);
     _openMapFileShortcut = new QShortcut(QKeySequence("Ctrl+M"), this);
 
-    connect(_executeButton, SIGNAL(clicked()), this, SLOT(executeScriptFile()));
     connect(_executeShortcut, SIGNAL(activated()), this, SLOT(executeScriptFile()));
-    connect(_editorTextEdit, SIGNAL(textChanged()), this, SLOT(editorTextEditChanged()));
     connect(_saveFileShortcut, SIGNAL(activated()), this, SLOT(saveFile()));
     connect(_openScriptFileShortcut, SIGNAL(activated()), this, SLOT(openScriptFile()));
     connect(_openMapFileShortcut, SIGNAL(activated()), this, SLOT(openMapFile()));
 
-    _editorVBoxLayout->addWidget(_scriptFileLabel);
-    _editorVBoxLayout->addWidget(_editorTextEdit);
-    _editorVBoxLayout->addWidget(_executeButton);
-
-    auto tabWidget = new QWidget;
-    tabWidget->setLayout(_editorVBoxLayout);
-    _editorTabWidget->addTab(tabWidget, "Editor");
+    _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
 
     _editorLayout->addWidget(_editorTabWidget);
 
@@ -71,12 +63,8 @@ void MainWindow::_initView()
     _window->setLayout(_mainLayout);
     setCentralWidget(_window);
 
-    _editorTextEdit->setFocus();
-
     QRect rect = QGuiApplication::primaryScreen()->geometry();
     resize(rect.size() * 0.7);
-
-    _nyxDebugMode = false;
 }
 
 void MainWindow::_initMenu()
@@ -98,13 +86,46 @@ void MainWindow::_initMenu()
     QMenu * nyxMenu = menuBar()->addMenu("Nyx");
     QToolBar * nyxToolBar = addToolBar("Nyx");
 
+    _actionNyxRun = new QAction("Run", this);
+
     _actionNyxDebugMode = new QAction("Ast", this);
     _actionNyxDebugMode->setCheckable(true);
 
+    nyxMenu->addAction(_actionNyxRun);
     nyxMenu->addAction(_actionNyxDebugMode);
+    nyxToolBar->addAction(_actionNyxRun);
     nyxToolBar->addAction(_actionNyxDebugMode);
 
+    connect(_actionNyxRun, SIGNAL(triggered()), this, SLOT(executeScriptFile()));
     connect(_actionNyxDebugMode, SIGNAL(toggled(bool)), this, SLOT(nyxDebugMode(bool)));
+}
+
+CodeEditor * MainWindow::_newCodeEditor()
+{
+    CodeEditor * editorTextEdit = new CodeEditor(this);
+    editorTextEdit->setFontFamily("Courier New");
+    return editorTextEdit;
+}
+
+QWidget * MainWindow::_newCodeEditorWidget()
+{
+    auto scriptFileLabel = new QLabel(this);
+    _scriptFileLabelVector.append(scriptFileLabel);
+
+    CodeEditor * codeEditor = _newCodeEditor();
+    codeEditor->setFocus();
+    _codeEditorVector.append(codeEditor);
+
+    connect(codeEditor, SIGNAL(textChanged()), this, SLOT(editorTextEditChanged()));
+
+    auto editorLayout = new QVBoxLayout;
+    editorLayout->addWidget(scriptFileLabel);
+    editorLayout->addWidget(codeEditor);
+
+    auto tabWidget = new QWidget;
+    tabWidget->setLayout(editorLayout);
+
+    return tabWidget;
 }
 
 void MainWindow::openMapFile()
@@ -135,14 +156,36 @@ void MainWindow::openScriptFile()
             return;
         }
 
+        _filesPathVector.append(file.fileName());
+
         QString content = file.readAll();
-        _editorTextEdit->setPlainText(content);
-        _currentScriptFilePath = file.fileName();
-        _scriptFileLabel->setText(_currentScriptFilePath);
-        _scriptFileLabel->setStyleSheet("font-style: normal");
+
+        CodeEditor * currentCodeEditor = nullptr;
+        QLabel * label = nullptr;
+
+        if (_nbOpennedFiles == 0)
+        {
+            currentCodeEditor = _codeEditorVector[0];
+            label = _scriptFileLabelVector[0];
+        }
+        else
+        {
+            _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
+            currentCodeEditor = _codeEditorVector.last();
+            label = _scriptFileLabelVector.last();
+        }
+
+        currentCodeEditor->setPlainText(content);
+
+        QString scriptFilePath = file.fileName();
+        label->setText(scriptFilePath);
+        label->setStyleSheet("font-style: normal");
 
         QFileInfo fileInfo(file.fileName());
-        _editorTabWidget->setTabText(0, fileInfo.fileName());
+        _editorTabWidget->setCurrentIndex(_editorTabWidget->count() - 1);
+        _editorTabWidget->setTabText(_editorTabWidget->currentIndex(), fileInfo.fileName());
+
+        _nbOpennedFiles++;
 
         file.close();
     }
@@ -150,10 +193,12 @@ void MainWindow::openScriptFile()
 
 void MainWindow::saveFile()
 {
-    if (_currentScriptFilePath.isEmpty())
+    if (_nbOpennedFiles == 0)
         return;
 
-    QFile file(_currentScriptFilePath);
+    QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
+
+    QFile file(filePath);
     if (!file.exists())
         return;
 
@@ -164,17 +209,25 @@ void MainWindow::saveFile()
         return;
     }
 
-    file.resize(0); // delete file content
-    file.write(_editorTextEdit->toPlainText().toStdString().c_str());
+    CodeEditor * currentCodeEditor = _codeEditorVector[_editorTabWidget->currentIndex()];
+    QLabel * currentFileLabel = _scriptFileLabelVector[_editorTabWidget->currentIndex()];
 
-    setScriptFileLabelAsModified(false);
+    file.resize(0); // delete file content
+    file.write(currentCodeEditor->toPlainText().toStdString().c_str());
+
+    _setScriptFileLabelAsModified(false, currentFileLabel, filePath);
 
     file.close();
 }
 
 void MainWindow::executeScriptFile()
 {
-    std::string fName = _currentScriptFilePath.toStdString();
+    if (_nbOpennedFiles == 0)
+        return;
+
+    QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
+
+    std::string fName = filePath.toStdString();
     std::stringstream ss;
     nyx::Compilo c(fName, ss, _nyxDebugMode);
     c.compile();
@@ -184,20 +237,25 @@ void MainWindow::executeScriptFile()
 
 void MainWindow::editorTextEditChanged()
 {
-    setScriptFileLabelAsModified(true);
+    QLabel * currentFileLabel = _scriptFileLabelVector[_editorTabWidget->currentIndex()];
+    QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
+    _setScriptFileLabelAsModified(true, currentFileLabel, filePath);
 }
 
-void MainWindow::setScriptFileLabelAsModified(bool isModified)
+void MainWindow::_setScriptFileLabelAsModified(bool isModified, QLabel * scriptFileLabel, QString & scriptFilePath)
 {
+    if (_nbOpennedFiles == 0)
+        return;
+
     if (isModified)
     {
-        _scriptFileLabel->setStyleSheet("font-style: italic");
-        _scriptFileLabel->setText(_currentScriptFilePath + "*");
+        scriptFileLabel->setStyleSheet("font-style: italic");
+        scriptFileLabel->setText(scriptFilePath + "*");
     }
     else
     {
-        _scriptFileLabel->setStyleSheet("font-style: normal");
-        _scriptFileLabel->setText(_currentScriptFilePath);
+        scriptFileLabel->setStyleSheet("font-style: normal");
+        scriptFileLabel->setText(scriptFilePath);
     }
 }
 
