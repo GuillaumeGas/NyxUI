@@ -229,7 +229,8 @@ void MainWindow::executeScriptFile()
 
     std::string fName = filePath.toStdString();
     std::stringstream ss;
-    nyx::Compilo c(fName, ss, _nyxDebugMode);
+    _nyxSyscallInterface.setOutStream(&ss);
+    nyx::Compilo c(fName, &_nyxSyscallInterface, ss, _nyxDebugMode);
     c.compile();
     QString res(ss.str().c_str());
     _outputTextEdit->setPlainText(res);

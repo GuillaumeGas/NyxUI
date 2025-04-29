@@ -10,6 +10,7 @@
 
 #include "renderer.h"
 #include "codeeditor.h"
+#include "nyxsyscallsinterface.h"
 
 class MainWindow : public QMainWindow
 {
@@ -57,6 +58,7 @@ private:
     //QString _currentScriptFilePath;
 
     bool _nyxDebugMode;
+    NyxSyscallsInterface _nyxSyscallInterface;
     int _nbOpennedFiles;
 
     void _initView();
