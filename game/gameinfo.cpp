@@ -24,4 +24,7 @@ void GameInfo::moveRight()
     {
         _grid.move(_botPos.x, _botPos.y, newX, newY);
     }
+
+    _botPos.x = newX;
+    _botPos.y = newY;
 }

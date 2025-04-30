@@ -49,8 +49,8 @@ ast::ExpressionPtr NyxSyscallsInterface::getGridInfo(std::vector<ast::Expression
     }
 
     map<string, ast::ExpressionPtr> members;
-    members["nbColumns"] = ast::Expression::New<ast::Int>(5, nullptr);
-    members["nbLines"] = ast::Expression::New<ast::Int>(5, nullptr);
+    members["nbColumns"] = ast::Expression::New<ast::Int>(grid.size(), nullptr);
+    members["nbLines"] = ast::Expression::New<ast::Int>(grid.size(), nullptr);
     members["grid"] = ast::Expression::New<ast::Array>(vec, nullptr);
 
     return ast::Expression::New<ast::StructExpr>("GridInfo", members, true, nullptr);

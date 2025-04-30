@@ -252,6 +252,9 @@ void MainWindow::executeScriptFile()
     QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
     std::string fName = filePath.toStdString();
 
+    _outputStream.clear();
+    _outputStream.str(string());
+
     nyx::Compilo c(fName, _nyxSyscallInterface, _outputStream, _nyxDebugMode);
     c.compile();
 

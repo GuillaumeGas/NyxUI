@@ -24,7 +24,7 @@ void printGrid(int[] array, int nbColumns)
 			i = 0;
 		}
 		
-		i = i+1; // todo implement i++
+		i = i+1;
 	}
 }
 
@@ -32,17 +32,16 @@ int main()
 {
 	let gridInfo = $getGridInfo();
 
-	$println("nbColumns : ", gridInfo.nbColumns);
-	//$println("nbLines : ", gridInfo.nbLines);
+	$println("BEFORE");
 
     printGrid(gridInfo.grid, gridInfo.nbColumns);
 
+	$println("MOVING RIGHT");
 	$moveRight();
 
 	let gridInfo2 = $getGridInfo();
 
-	$println("nbColumns : ", gridInfo2.nbColumns);
-	$println("nbLines : ", gridInfo2.nbLines);
+	$println("AFTER");
 
     printGrid(gridInfo2.grid, gridInfo2.nbColumns);
 
