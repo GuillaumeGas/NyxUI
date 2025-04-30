@@ -1,38 +1,50 @@
+import nyxgame;
+
+/* Declared in nyxgame
 struct Position
 {
     int x;      // User coordinates
     int y;
     int[] grid; // Grid content (0 if empty, 1 for walls, 2 for player)
 }
-
-void printPosition(Position p)
-{
-    $println("Sum coordinates (very usefull) : ", p.x + p.y);
-    printArray(p.grid);
-}
+*/
 
 /*
   Prints an array of integers !
 */
-void printArray(int[] array)
+void printGrid(int[] array, int nbColumns)
 {
-    let i = 0;
-    for (elem in array)
-    {
-        $print(elem);
-        if (i < 4) { $println(); }
-    }
-    $println();
+	let i = 1;
+	for (case in array)
+	{
+		$print(case);
+		if (i % nbColumns == 0)
+		{
+			$println("");
+			i = 0;
+		}
+		
+		i = i+1; // todo implement i++
+	}
 }
 
 int main()
 {
-    let p = new Position;
-    p.x = 1;
-    p.y = 1;
-    p.grid = [1, 2, 3, 4];
+	let gridInfo = $getGridInfo();
 
-    printPosition(p);
+	$println("nbColumns : ", gridInfo.nbColumns);
+	//$println("nbLines : ", gridInfo.nbLines);
+
+    printGrid(gridInfo.grid, gridInfo.nbColumns);
+
+	$moveRight();
+
+	let gridInfo2 = $getGridInfo();
+
+	$println("nbColumns : ", gridInfo2.nbColumns);
+	$println("nbLines : ", gridInfo2.nbLines);
+
+    printGrid(gridInfo2.grid, gridInfo2.nbColumns);
 
     return 0;
 }

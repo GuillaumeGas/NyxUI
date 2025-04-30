@@ -25,11 +25,11 @@ void Renderer::drawMapAndPlayers(QPainter & painter)
     QPixmap emptyImage(":/images/empty.png");
     QPixmap aiImage(":images/ai.png");
 
-    const QVector<QVector<int>> & grid = _grid.getGrid();
+    const std::vector<std::vector<int>> & grid = _grid.getGrid();
 
-    for (int i = 0; i < grid.count(); i++)
+    for (int i = 0; i < grid.size(); i++)
     {
-        for (int j = 0; j < grid.count(); j++)
+        for (int j = 0; j < grid.size(); j++)
         {
             int x = (j * CELL_SIZE) + (width() - (GRID_SIZE + CELL_SIZE)) / 2;
             int y = (i * CELL_SIZE) + (height() - (GRID_SIZE + CELL_SIZE)) / 2;
@@ -93,7 +93,7 @@ QSize Renderer::sizeHint() const
     return QSize(400, 400);
 }
 
-void Renderer::updateGrid(QString filePath)
+void Renderer::updateGrid(const Grid * grid)
 {
-    _grid.load(filePath);
+    _grid = Grid(*grid);
 }

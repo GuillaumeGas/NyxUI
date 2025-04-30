@@ -5,20 +5,19 @@
 
 Grid::Grid() {}
 
-void Grid::load(QString filePath)
+Grid::Status Grid::load(QString filePath)
 {
     QFile file(filePath);
     if (!file.exists())
     {
-        QMessageBox::warning(nullptr, "File", "File not found !");
-        return;
+        return Status::FILE_NOT_FOUND;
     }
 
     QString line;
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QMessageBox::warning(nullptr, "File", "Cannot read file !");
-        return;
+        return Status::CANNOT_READ_FILE;
     }
 
     _grid.clear();
@@ -34,7 +33,7 @@ void Grid::load(QString filePath)
         line = stream.readLine();
         int nbColumns = line.length();
 
-        _grid.push_back(QVector<int>(nbColumns));
+        _grid.push_back(std::vector<int>(nbColumns));
 
         for (int i = 0; i < nbColumns; i++)
         {
@@ -70,14 +69,35 @@ void Grid::load(QString filePath)
     }
 
     file.close();
+
+    return Status::OK;
 }
 
-const QVector<QVector<int>> & Grid::getGrid() const
+const std::vector<std::vector<int>> & Grid::getGrid() const
 {
     return _grid;
 }
 
 int Grid::getSize() const
 {
-    return _grid.count();
+    return _grid.size();
+}
+
+bool Grid::isPosAvailable(int x, int y)
+{
+    if (x >= _grid.size() || y >= _grid.size())
+        return false;
+
+    return _grid[y][x] == 0;
+}
+
+void Grid::move(int x, int y, int newX, int newY)
+{
+    if (x >= _grid.size() || y >= _grid.size())
+        return;
+    if (newX >= _grid.size() || newY >= _grid.size())
+        return;
+
+    _grid[newY][newX] = _grid[y][x];
+    _grid[y][x] = 0;
 }

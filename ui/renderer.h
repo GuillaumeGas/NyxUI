@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "grid.h"
+#include "../game/grid.h"
 
 #define OUTPUT_RENDERER_GRID_SIZE 10
 
@@ -16,7 +16,7 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
-    void updateGrid(QString filePath);
+    void updateGrid(const Grid * grid);
 
 signals:
 

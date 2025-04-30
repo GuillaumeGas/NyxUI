@@ -4,15 +4,12 @@
 
 using namespace nyx;
 
-NyxSyscallsInterface::NyxSyscallsInterface() : _ss(&cout)
+NyxSyscallsInterface::NyxSyscallsInterface(std::ostream & outstream, GameInfo * gameInfo) : _out(outstream), _gameInfo(gameInfo)
 {
     addSyscall("print", std::bind(&NyxSyscallsInterface::print, this, std::placeholders::_1));
     addSyscall("println", std::bind(&NyxSyscallsInterface::println, this, std::placeholders::_1));
-}
-
-void NyxSyscallsInterface::setOutStream(std::ostream * stream)
-{
-    _ss = stream;
+    addSyscall("getGridInfo", std::bind(&NyxSyscallsInterface::getGridInfo, this, std::placeholders::_1));
+    addSyscall("moveRight", std::bind(&NyxSyscallsInterface::moveRight, this, std::placeholders::_1));
 }
 
 ast::ExpressionPtr NyxSyscallsInterface::print(std::vector<ast::ExpressionPtr> * params)
@@ -33,7 +30,35 @@ ast::ExpressionPtr NyxSyscallsInterface::println(std::vector<ast::ExpressionPtr>
         }
     }
 
-    *_ss << endl;
+    _out << endl;
+
+    return ast::NullExpression();
+}
+
+ast::ExpressionPtr NyxSyscallsInterface::getGridInfo(std::vector<ast::ExpressionPtr>* params)
+{
+    const vector<vector<int>> & grid = _gameInfo->getGrid()->getGrid();
+
+    auto vec = new vector<ast::ExpressionPtr>();
+    for (int i = 0; i < grid.size(); i++)
+    {
+        for (int j = 0; j < grid.size(); j++)
+        {
+            vec->push_back(ast::Expression::New<ast::Int>(grid[i][j], nullptr));
+        }
+    }
+
+    map<string, ast::ExpressionPtr> members;
+    members["nbColumns"] = ast::Expression::New<ast::Int>(5, nullptr);
+    members["nbLines"] = ast::Expression::New<ast::Int>(5, nullptr);
+    members["grid"] = ast::Expression::New<ast::Array>(vec, nullptr);
+
+    return ast::Expression::New<ast::StructExpr>("GridInfo", members, true, nullptr);
+}
+
+ast::ExpressionPtr NyxSyscallsInterface::moveRight(std::vector<ast::ExpressionPtr>* params)
+{
+    _gameInfo->moveRight();
 
     return ast::NullExpression();
 }
@@ -42,23 +67,21 @@ void NyxSyscallsInterface::_print(ast::ExpressionPtr e) {
     vector<ast::ExpressionPtr>* vec = NULL;
     ast::RangePtr range;
 
-    std::ostream & out = *_ss;
-
     if (e->getType()->value == ast::TYPE::ARRAY || e->getType()->value == ast::TYPE::RANGE)
-        out << "[";
+        _out << "[";
 
     switch (e->getType()->value) {
     case ast::TYPE::INT:
-        out << e->getInt();
+        _out << e->getInt();
         break;
     case ast::TYPE::CHAR:
-        out << e->getChar();
+        _out << e->getChar();
         break;
     case ast::TYPE::BOOL:
-        out << e->getBool();
+        _out << e->getBool();
         break;
     case ast::TYPE::FLOAT:
-        out << e->getFloat();
+        _out << e->getFloat();
         break;
     case ast::TYPE::STRING:
         vec = e->getArray();
@@ -72,18 +95,18 @@ void NyxSyscallsInterface::_print(ast::ExpressionPtr e) {
             ast::ExpressionPtr obj = (*vec)[i]->interpretExpression();
             _print(obj);
             if (i < vec->size() - 1)
-                out << ", ";
+                _out << ", ";
         }
         break;
     case ast::TYPE::RANGE:
-        out << e->getRangeBegin()->getInt();
-        out << " .. ";
-        out << e->getRangeEnd()->getInt();
+        _out << e->getRangeBegin()->getInt();
+        _out << " .. ";
+        _out << e->getRangeEnd()->getInt();
         break;
     default:
-        out << "Unknown type " + e->getType()->toString() + "!" << endl;
+        _out << "Unknown type " + e->getType()->toString() + "!" << endl;
     }
 
     if (e->getType()->value == ast::TYPE::ARRAY || e->getType()->value == ast::TYPE::RANGE)
-        out << "]";
+        _out << "]";
 }

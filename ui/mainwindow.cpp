@@ -18,12 +18,20 @@ MainWindow::MainWindow(QWidget *parent)
     _initDefaultData();
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow()
+{
+    if (_gameInfo)
+        delete _gameInfo;
+    if (_nyxSyscallInterface)
+        delete _nyxSyscallInterface;
+}
 
 void MainWindow::_initDefaultData()
 {
     _nyxDebugMode = false;
     _nbOpennedFiles = 0;
+    _gameInfo = new GameInfo();
+    _nyxSyscallInterface = new NyxSyscallsInterface(_outputStream, _gameInfo);
 }
 
 void MainWindow::_initView()
@@ -133,7 +141,23 @@ void MainWindow::openMapFile()
     QString mapFile = QFileDialog::getOpenFileName(this, "Open map file");
     if (mapFile.length() > 0)
     {
-        _outputRenderer->updateGrid(mapFile);
+        Grid::Status gridStatus = _gameInfo->loadGrid(mapFile);
+        if (gridStatus == Grid::Status::OK)
+        {
+            _outputRenderer->updateGrid(_gameInfo->getGrid());
+        }
+        else
+        {
+            switch(gridStatus)
+            {
+            case Grid::Status::FILE_NOT_FOUND:
+                QMessageBox::warning(this, "File", "File not found !");
+                break;
+            case Grid::Status::CANNOT_READ_FILE:
+                QMessageBox::warning(nullptr, "File", "Cannot read file !");
+                break;
+            }
+        }
     }
 }
 
@@ -226,14 +250,17 @@ void MainWindow::executeScriptFile()
         return;
 
     QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
-
     std::string fName = filePath.toStdString();
-    std::stringstream ss;
-    _nyxSyscallInterface.setOutStream(&ss);
-    nyx::Compilo c(fName, &_nyxSyscallInterface, ss, _nyxDebugMode);
+
+    nyx::Compilo c(fName, _nyxSyscallInterface, _outputStream, _nyxDebugMode);
     c.compile();
-    QString res(ss.str().c_str());
+
+    QString res(_outputStream.str().c_str());
+
+    _outputTextEdit->clear();
     _outputTextEdit->setPlainText(res);
+    _outputRenderer->updateGrid(_gameInfo->getGrid());
+    _outputRenderer->repaint();
 }
 
 void MainWindow::editorTextEditChanged()

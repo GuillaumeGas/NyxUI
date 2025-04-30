@@ -8,9 +8,12 @@
 #include <QLabel>
 #include <QShortcut>
 
+#include <sstream>
+
 #include "renderer.h"
 #include "codeeditor.h"
-#include "nyxsyscallsinterface.h"
+#include "../nyx/nyxsyscallsinterface.h"
+#include "../game/gameinfo.h"
 
 class MainWindow : public QMainWindow
 {
@@ -55,11 +58,11 @@ private:
     QAction * _actionNyxRun;
     QAction * _actionNyxDebugMode;
 
-    //QString _currentScriptFilePath;
-
     bool _nyxDebugMode;
-    NyxSyscallsInterface _nyxSyscallInterface;
     int _nbOpennedFiles;
+    std::stringstream _outputStream;
+    NyxSyscallsInterface * _nyxSyscallInterface;
+    GameInfo * _gameInfo;
 
     void _initView();
     void _initMenu();

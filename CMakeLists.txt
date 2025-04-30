@@ -18,26 +18,28 @@ link_directories("C:/Users/Guillaume/Documents/prog/c++/NyxQt/build/Desktop_Qt_6
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(NyxUI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        renderer.h renderer.cpp
+
         images/ai.png images/empty.png images/wall.png
         resources.qrc
-        grid.h grid.cpp
-        grid.h
-        grid.cpp
+
+
+
         map
         test.nx
-        linenumberwidget.h linenumberwidget.cpp
-        codeeditor.h codeeditor.cpp
-        highlighter.h highlighter.cpp
-        nyxsyscallsinterface.h nyxsyscallsinterface.cpp
+        game/gameinfo.cpp game/gameinfo.h game/grid.cpp game/grid.h nyx/nyxsyscallsinterface.cpp nyx/nyxsyscallsinterface.h ui/codeeditor.cpp ui/codeeditor.h ui/highlighter.cpp ui/highlighter.h ui/linenumberwidget.cpp ui/linenumberwidget.h ui/mainwindow.cpp ui/mainwindow.h ui/renderer.cpp ui/renderer.h
+
+
+
+
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET NyxUI APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
