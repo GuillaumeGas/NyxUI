@@ -7,7 +7,10 @@ GameInfo::GameInfo() : _botPos(0, 0)
 
 Grid::Status GameInfo::loadGrid(QString filePath)
 {
-    return _grid.load(filePath);
+    auto status = _grid.load(filePath);;
+    if (status == Grid::Status::OK)
+        _botPos = Position(0, 0);
+    return status;
 }
 
 const Grid * GameInfo::getGrid() const

@@ -106,6 +106,16 @@ void MainWindow::_initMenu()
 
     connect(_actionNyxRun, SIGNAL(triggered()), this, SLOT(executeScriptFile()));
     connect(_actionNyxDebugMode, SIGNAL(toggled(bool)), this, SLOT(nyxDebugMode(bool)));
+
+    QMenu * gameMenu = menuBar()->addMenu("Game");
+    QToolBar * gameToolBar = addToolBar("Game");
+
+    _actionGameReset = new QAction("Reset", this);
+
+    gameMenu->addAction(_actionGameReset);
+    gameToolBar->addAction(_actionGameReset);
+
+    connect(_actionGameReset, SIGNAL(triggered()), this, SLOT(gameReset()));
 }
 
 CodeEditor * MainWindow::_newCodeEditor()
@@ -141,22 +151,28 @@ void MainWindow::openMapFile()
     QString mapFile = QFileDialog::getOpenFileName(this, "Open map file");
     if (mapFile.length() > 0)
     {
-        Grid::Status gridStatus = _gameInfo->loadGrid(mapFile);
-        if (gridStatus == Grid::Status::OK)
+        _loadMapFile(mapFile);
+    }
+}
+
+void MainWindow::_loadMapFile(QString mapFile)
+{
+    Grid::Status gridStatus = _gameInfo->loadGrid(mapFile);
+    if (gridStatus == Grid::Status::OK)
+    {
+        _outputRenderer->updateGrid(_gameInfo->getGrid());
+        _currentMapFile = mapFile;
+    }
+    else
+    {
+        switch(gridStatus)
         {
-            _outputRenderer->updateGrid(_gameInfo->getGrid());
-        }
-        else
-        {
-            switch(gridStatus)
-            {
-            case Grid::Status::FILE_NOT_FOUND:
-                QMessageBox::warning(this, "File", "File not found !");
-                break;
-            case Grid::Status::CANNOT_READ_FILE:
-                QMessageBox::warning(nullptr, "File", "Cannot read file !");
-                break;
-            }
+        case Grid::Status::FILE_NOT_FOUND:
+            QMessageBox::warning(this, "File", "File not found !");
+            break;
+        case Grid::Status::CANNOT_READ_FILE:
+            QMessageBox::warning(nullptr, "File", "Cannot read file !");
+            break;
         }
     }
 }
@@ -293,4 +309,11 @@ void MainWindow::_setScriptFileLabelAsModified(bool isModified, QLabel * scriptF
 void MainWindow::nyxDebugMode(bool checked)
 {
     _nyxDebugMode = checked;
+}
+
+void MainWindow::gameReset()
+{
+    _loadMapFile(_currentMapFile);
+    _outputRenderer->repaint();
+    _outputTextEdit->clear();
 }

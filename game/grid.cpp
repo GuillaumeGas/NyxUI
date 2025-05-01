@@ -63,10 +63,6 @@ Grid::Status Grid::load(QString filePath)
         _grid.clear();
         QMessageBox::critical(nullptr, "Grid", "Invalid grid dimension");
     }
-    else
-    {
-        QMessageBox::information(nullptr, "File", "File loaded successfully !");
-    }
 
     file.close();
 

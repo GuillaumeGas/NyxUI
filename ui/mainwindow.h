@@ -30,6 +30,7 @@ private slots:
     void editorTextEditChanged();
     void saveFile();
     void nyxDebugMode(bool checked);
+    void gameReset();
 
 private:
     QWidget * _window;
@@ -58,11 +59,14 @@ private:
     QAction * _actionNyxRun;
     QAction * _actionNyxDebugMode;
 
+    QAction * _actionGameReset;
+
     bool _nyxDebugMode;
     int _nbOpennedFiles;
     std::stringstream _outputStream;
     NyxSyscallsInterface * _nyxSyscallInterface;
     GameInfo * _gameInfo;
+    QString _currentMapFile;
 
     void _initView();
     void _initMenu();
@@ -71,5 +75,6 @@ private:
     void _setScriptFileLabelAsModified(bool isModified, QLabel * fileLabel, QString & scriptFilePath);
     CodeEditor * _newCodeEditor();
     QWidget * _newCodeEditorWidget();
+    void _loadMapFile(QString mapFile);
 };
 #endif // MAINWINDOW_H
