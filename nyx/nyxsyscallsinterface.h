@@ -19,6 +19,9 @@ private:
     nyx::ast::ExpressionPtr println(std::vector<nyx::ast::ExpressionPtr> * params);
     nyx::ast::ExpressionPtr getGridInfo(std::vector<nyx::ast::ExpressionPtr> * params);
     nyx::ast::ExpressionPtr moveRight(std::vector<nyx::ast::ExpressionPtr> * params);
+    nyx::ast::ExpressionPtr moveLeft(std::vector<nyx::ast::ExpressionPtr> * params);
+    nyx::ast::ExpressionPtr moveUp(std::vector<nyx::ast::ExpressionPtr> * params);
+    nyx::ast::ExpressionPtr moveDown(std::vector<nyx::ast::ExpressionPtr> * params);
 
     void _print(nyx::ast::ExpressionPtr e);
 

@@ -10,6 +10,9 @@ NyxSyscallsInterface::NyxSyscallsInterface(std::ostream & outstream, GameInfo * 
     addSyscall("println", std::bind(&NyxSyscallsInterface::println, this, std::placeholders::_1));
     addSyscall("getGridInfo", std::bind(&NyxSyscallsInterface::getGridInfo, this, std::placeholders::_1));
     addSyscall("moveRight", std::bind(&NyxSyscallsInterface::moveRight, this, std::placeholders::_1));
+    addSyscall("moveLeft", std::bind(&NyxSyscallsInterface::moveLeft, this, std::placeholders::_1));
+    addSyscall("moveUp", std::bind(&NyxSyscallsInterface::moveUp, this, std::placeholders::_1));
+    addSyscall("moveDown", std::bind(&NyxSyscallsInterface::moveDown, this, std::placeholders::_1));
 }
 
 ast::ExpressionPtr NyxSyscallsInterface::print(std::vector<ast::ExpressionPtr> * params)
@@ -51,6 +54,8 @@ ast::ExpressionPtr NyxSyscallsInterface::getGridInfo(std::vector<ast::Expression
     map<string, ast::ExpressionPtr> members;
     members["nbColumns"] = ast::Expression::New<ast::Int>(grid.size(), nullptr);
     members["nbLines"] = ast::Expression::New<ast::Int>(grid.size(), nullptr);
+    members["x"] = ast::Expression::New<ast::Int>(_gameInfo->getBot().x, nullptr);
+    members["y"] = ast::Expression::New<ast::Int>(_gameInfo->getBot().y, nullptr);
     members["grid"] = ast::Expression::New<ast::Array>(vec, nullptr);
 
     return ast::Expression::New<ast::StructExpr>("GridInfo", members, true, nullptr);
@@ -59,6 +64,27 @@ ast::ExpressionPtr NyxSyscallsInterface::getGridInfo(std::vector<ast::Expression
 ast::ExpressionPtr NyxSyscallsInterface::moveRight(std::vector<ast::ExpressionPtr>* params)
 {
     _gameInfo->moveRight();
+
+    return ast::NullExpression();
+}
+
+ast::ExpressionPtr NyxSyscallsInterface::moveLeft(std::vector<ast::ExpressionPtr>* params)
+{
+    _gameInfo->moveLeft();
+
+    return ast::NullExpression();
+}
+
+ast::ExpressionPtr NyxSyscallsInterface::moveUp(std::vector<ast::ExpressionPtr>* params)
+{
+    _gameInfo->moveUp();
+
+    return ast::NullExpression();
+}
+
+ast::ExpressionPtr NyxSyscallsInterface::moveDown(std::vector<ast::ExpressionPtr>* params)
+{
+    _gameInfo->moveDown();
 
     return ast::NullExpression();
 }

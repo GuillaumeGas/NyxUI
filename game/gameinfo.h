@@ -24,6 +24,14 @@ public:
     const Grid * getGrid() const;
 
     void moveRight();
+    void moveLeft();
+    void moveUp();
+    void moveDown();
+
+    // Will update grid AND bot position
+    void tryMoveBot(const Position & p2);
+
+    const Position & getBot() const;
 
 private:
     Grid _grid;

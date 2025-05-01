@@ -36,8 +36,14 @@ int main()
 
     printGrid(gridInfo.grid, gridInfo.nbColumns);
 
-	$println("MOVING RIGHT");
-	$moveRight();
+	if (gridInfo.grid[gridInfo.y + 1] == 0)
+	{
+		$moveDown();
+	}
+	else
+	{
+		$moveRight();
+	}
 
 	let gridInfo2 = $getGridInfo();
 
