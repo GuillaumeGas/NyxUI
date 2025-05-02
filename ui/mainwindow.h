@@ -26,6 +26,7 @@ public:
 private slots:
     void openMapFile();
     void openScriptFile();
+    void newScriptFile();
     void executeScriptFile();
     void editorTextEditChanged();
     void saveFile();
@@ -54,6 +55,7 @@ private:
 
     QAction * _actionMapFile;
     QAction * _actionScriptFile;
+    QAction * _actionNewScriptFile;
     QAction * _actionQuit;
 
     QAction * _actionNyxRun;
@@ -76,5 +78,6 @@ private:
     CodeEditor * _newCodeEditor();
     QWidget * _newCodeEditorWidget();
     void _loadMapFile(QString mapFile);
+    QString _askForNewFilePath();
 };
 #endif // MAINWINDOW_H

@@ -79,14 +79,17 @@ void MainWindow::_initMenu()
 
     _actionMapFile = new QAction("Open map file...", this);
     _actionScriptFile = new QAction("Open script...", this);
+    _actionNewScriptFile = new QAction("New script", this);
     _actionQuit = new QAction("Quit", this);
 
     fileMenu->addAction(_actionMapFile);
     fileMenu->addAction(_actionScriptFile);
+    fileMenu->addAction(_actionNewScriptFile);
     fileMenu->addAction(_actionQuit);
 
     connect(_actionMapFile, SIGNAL(triggered()), this, SLOT(openMapFile()));
     connect(_actionScriptFile, SIGNAL(triggered()), this, SLOT(openScriptFile()));
+    connect(_actionNewScriptFile, SIGNAL(triggered()), this, SLOT(newScriptFile()));
     connect(_actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     QMenu * nyxMenu = menuBar()->addMenu("Nyx");
@@ -221,17 +224,29 @@ void MainWindow::openScriptFile()
     }
 }
 
+void MainWindow::newScriptFile()
+{
+    _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
+    _filesPathVector.push_back("");
+    _nbOpennedFiles++;
+}
+
 void MainWindow::saveFile()
 {
     if (_nbOpennedFiles == 0)
         return;
 
-    QString & filePath = _filesPathVector[_editorTabWidget->currentIndex()];
+    unsigned int indexFilePath = _editorTabWidget->currentIndex();
+
+    QString & filePath = _filesPathVector[indexFilePath];
+
+    if (filePath == "")
+    {
+        filePath = _askForNewFilePath();
+        _filesPathVector[indexFilePath];
+    }
 
     QFile file(filePath);
-    if (!file.exists())
-        return;
-
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QMessageBox::warning(this, "File", "Couldn't open destination file");
@@ -248,6 +263,13 @@ void MainWindow::saveFile()
     _setScriptFileLabelAsModified(false, currentFileLabel, filePath);
 
     file.close();
+}
+
+QString MainWindow::_askForNewFilePath()
+{
+    QFileDialog dialog;
+    dialog.setFileMode(QFileDialog::AnyFile);
+    return dialog.getSaveFileName(this, "New script file");
 }
 
 void MainWindow::executeScriptFile()
