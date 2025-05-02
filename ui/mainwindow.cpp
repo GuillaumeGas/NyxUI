@@ -61,8 +61,6 @@ void MainWindow::_initView()
     connect(_openScriptFileShortcut, SIGNAL(activated()), this, SLOT(openScriptFile()));
     connect(_openMapFileShortcut, SIGNAL(activated()), this, SLOT(openMapFile()));
 
-    _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
-
     _editorLayout->addWidget(_editorTabWidget);
 
     _mainLayout->addLayout(_outputLayout);
@@ -203,17 +201,9 @@ void MainWindow::openScriptFile()
         CodeEditor * currentCodeEditor = nullptr;
         QLabel * label = nullptr;
 
-        if (_nbOpennedFiles == 0)
-        {
-            currentCodeEditor = _codeEditorVector[0];
-            label = _scriptFileLabelVector[0];
-        }
-        else
-        {
-            _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
-            currentCodeEditor = _codeEditorVector.last();
-            label = _scriptFileLabelVector.last();
-        }
+        _editorTabWidget->addTab(_newCodeEditorWidget(), "Editor");
+        currentCodeEditor = _codeEditorVector.last();
+        label = _scriptFileLabelVector.last();
 
         currentCodeEditor->setPlainText(content);
 
