@@ -52,6 +52,7 @@ private:
     QShortcut * _saveFileShortcut;
     QShortcut * _openScriptFileShortcut;
     QShortcut * _openMapFileShortcut;
+    QShortcut * _createNewScriptFileShortcut;
 
     QAction * _actionMapFile;
     QAction * _actionScriptFile;
