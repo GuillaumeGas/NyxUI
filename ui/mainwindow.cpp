@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "codeeditor.h"
+#include "../game/gameinfo.h"
 
 #include <QScreen>
 #include <QApplication>
@@ -160,8 +161,8 @@ void MainWindow::openMapFile()
 
 void MainWindow::_loadMapFile(QString mapFile)
 {
-    Grid::Status gridStatus = _gameInfo->loadGrid(mapFile);
-    if (gridStatus == Grid::Status::OK)
+    GameStatus gridStatus = _gameInfo->loadGame(mapFile);
+    if (gridStatus == GameStatus::OK)
     {
         _outputRenderer->updateGrid(_gameInfo->getGrid());
         _currentMapFile = mapFile;
@@ -170,10 +171,10 @@ void MainWindow::_loadMapFile(QString mapFile)
     {
         switch(gridStatus)
         {
-        case Grid::Status::FILE_NOT_FOUND:
+        case GameStatus::FILE_NOT_FOUND:
             QMessageBox::warning(this, "File", "File not found !");
             break;
-        case Grid::Status::CANNOT_READ_FILE:
+        case GameStatus::CANNOT_READ_FILE:
             QMessageBox::warning(nullptr, "File", "Cannot read file !");
             break;
         }

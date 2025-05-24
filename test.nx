@@ -32,11 +32,11 @@ int main()
 {
 	let gridInfo = $getGridInfo();
 
-	$println("BEFORE");
+	$println("Pos : ", gridInfo.x, " ", gridInfo.y);
 
-    printGrid(gridInfo.grid, gridInfo.nbColumns);
+    //printGrid(gridInfo.grid, gridInfo.nbColumns);
 
-	if (gridInfo.grid[gridInfo.y + 1] == 0)
+	if (gridInfo.y < 9)
 	{
 		$moveDown();
 	}
@@ -47,9 +47,7 @@ int main()
 
 	let gridInfo2 = $getGridInfo();
 
-	$println("AFTER");
-
-    printGrid(gridInfo2.grid, gridInfo2.nbColumns);
+    //printGrid(gridInfo2.grid, gridInfo2.nbColumns);
 
     return 0;
 }

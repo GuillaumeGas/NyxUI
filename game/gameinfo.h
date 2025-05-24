@@ -2,8 +2,10 @@
 #define GAMEINFO_H
 
 #include <QString>
+#include <QTextStream>
 
 #include "grid.h"
+#include "gamestatus.h"
 
 class Position
 {
@@ -19,7 +21,7 @@ class GameInfo
 public:
     GameInfo();
 
-    Grid::Status loadGrid(QString filePath);
+    GameStatus loadGame(QString filePath);
 
     const Grid * getGrid() const;
 
@@ -34,8 +36,14 @@ public:
     const Position & getBot() const;
 
 private:
+    GameStatus _loadHeader(QString filePath);
+    GameStatus _readPositionInHeader(QTextStream & stream, Position & pos);
+    GameStatus _readSingleIntInHeader(QTextStream & stream, unsigned int & pos);
+
     Grid _grid;
     Position _botPos;
+    Position _targetPos;
+    unsigned int _turnsLimit;
 };
 
 #endif // GAMEINFO_H

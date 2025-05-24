@@ -35,6 +35,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         map
         test.nx
         game/gameinfo.cpp game/gameinfo.h game/grid.cpp game/grid.h nyx/nyxsyscallsinterface.cpp nyx/nyxsyscallsinterface.h ui/codeeditor.cpp ui/codeeditor.h ui/highlighter.cpp ui/highlighter.h ui/linenumberwidget.cpp ui/linenumberwidget.h ui/mainwindow.cpp ui/mainwindow.h ui/renderer.cpp ui/renderer.h
+        game/gamestatus.h
+        images/target.png
 
 
 

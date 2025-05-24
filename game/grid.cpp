@@ -5,19 +5,18 @@
 
 Grid::Grid() {}
 
-Grid::Status Grid::load(QString filePath)
+GameStatus Grid::load(QString filePath)
 {
     QFile file(filePath);
     if (!file.exists())
     {
-        return Status::FILE_NOT_FOUND;
+        return GameStatus::FILE_NOT_FOUND;
     }
 
-    QString line;
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QMessageBox::warning(nullptr, "File", "Cannot read file !");
-        return Status::CANNOT_READ_FILE;
+        return GameStatus::CANNOT_READ_FILE;
     }
 
     _grid.clear();
@@ -27,6 +26,10 @@ Grid::Status Grid::load(QString filePath)
     bool invalidGridDim = false;
 
     QTextStream stream(&file);
+    QString line;
+
+    while (!stream.atEnd() && ((line = stream.readLine()) != "MAP")) {}
+
     int lineIndex = 0;
     while (!stream.atEnd())
     {
@@ -66,7 +69,7 @@ Grid::Status Grid::load(QString filePath)
 
     file.close();
 
-    return Status::OK;
+    return GameStatus::OK;
 }
 
 const std::vector<std::vector<int>> & Grid::getGrid() const
@@ -84,7 +87,7 @@ bool Grid::isPosAvailable(int x, int y)
     if (x >= _grid.size() || y >= _grid.size())
         return false;
 
-    return _grid[y][x] == 0;
+    return _grid[y][x] == CellType::EMPTY || _grid[y][x] == CellType::TARGET;
 }
 
 void Grid::move(int x, int y, int newX, int newY)
@@ -96,4 +99,12 @@ void Grid::move(int x, int y, int newX, int newY)
 
     _grid[newY][newX] = _grid[y][x];
     _grid[y][x] = 0;
+}
+
+void Grid::setCellTypeAtPos(int x, int y, CellType type)
+{
+    if (x >= _grid.size() || y >= _grid.size())
+        return;
+
+    _grid[y][x] = type;
 }

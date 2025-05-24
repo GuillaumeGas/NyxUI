@@ -24,6 +24,7 @@ void Renderer::drawMapAndPlayers(QPainter & painter)
     QPixmap wallImage(":/images/wall.png");
     QPixmap emptyImage(":/images/empty.png");
     QPixmap aiImage(":images/ai.png");
+    QPixmap targetImage(":images/target.png");
 
     const std::vector<std::vector<int>> & grid = _grid.getGrid();
 
@@ -44,6 +45,9 @@ void Renderer::drawMapAndPlayers(QPainter & painter)
                 break;
             case 2:
                 painter.drawPixmap(x, y, aiImage);
+                break;
+            case 3:
+                painter.drawPixmap(x, y, targetImage);
                 break;
             default:
                 painter.drawPixmap(x, y, emptyImage);
